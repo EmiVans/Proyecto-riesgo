@@ -31,10 +31,12 @@ rendimiento_medio = NVIDIA_rendimientos.mean()
 Kurtosis = kurtosis(NVIDIA_rendimientos)
 skew = skew(NVIDIA_rendimientos)
     
-col1, col2, col3= st.columns(3)
+col1, col2, col3 = st.columns(3)
+
+# Asegúrate de que las variables sean numéricas y luego formatea correctamente
 col1.metric("Rendimiento Medio Diario", f"{rendimiento_medio:.4%}")
-col2.metric("Kurtosis", f"{Kurtosis:.4}")
-col3.metric("Skew", f"{skew:.2}")
+col2.metric("Kurtosis", f"{Kurtosis:.4f}")  # Asegúrate de que Kurtosis tenga 4 decimales
+col3.metric("Skew", f"{skew:.2f}")  # Asegúrate de que Skew tenga 2 decimales
 
 # Gráfico de rendimientos diarios
 st.subheader(f"Gráfico de Rendimientos: NVIDIA")
