@@ -7,20 +7,18 @@ import scipy.stats as stats
 from scipy.stats import kurtosis, skew, shapiro ,norm
 from datetime import datetime
 
-st.title("Análisis estadístico rendimientos acciones NVIDIA")
+st.title("Evaluación del Riesgo Financiero de NVIDIA")
 
+# Descarga los datos de los ultimos 10 años
 @st.cache_data
-
-#Obtenemos los datos desde 2010 al día actual que se esté consultando el precio de la acción
-def obtener_datos(stocks):
-    end_date = datetime.today().strftime("%Y-%m-%d")  # Obtiene la fecha actual
-    df = yf.download(stocks, start="2010-01-01", end=end_date)['Close']
+def obtener_datos(stock):
+    df = yf.download(stock, start="2010-01-01")["Close"]
     return df
 
+# Calcula los rendimientos diarios
 @st.cache_data
 def calcular_rendimientos(df):
     return df.pct_change().dropna()
-
 
 # Lista de acciones de ejemplo
 stocks_lista = ['NVDA']
@@ -257,5 +255,5 @@ if stock_seleccionado:
 
     # Mostrar la figura en Streamlit
     st.pyplot(fig)
-    
+
     
