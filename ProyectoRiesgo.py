@@ -258,3 +258,4 @@ if stock_seleccionado:
     # Mostrar la figura en Streamlit
     st.pyplot(fig)
     
+    
