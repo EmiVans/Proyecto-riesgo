@@ -407,7 +407,7 @@ if stock_seleccionado:
     violaciones_var_hist_99, porcentaje_var_hist_99 = eficiencia_estimacion(df_rendimientos, NVDA_var_hist_99)
     violaciones_cvar_hist_99, porcentaje_cvar_hist_99 = eficiencia_estimacion(df_rendimientos, NVDA_cvar_hist_99)
 
-    # Crear un DataFrame con los resultados
+   # Crear un DataFrame con los resultados sin los índices
     resultados = pd.DataFrame({
         "Método": ["VaR Paramétrico 95%", "CVaR Paramétrico 95%", "VaR Paramétrico 99%", "CVaR Paramétrico 99%",
                 "VaR Histórico 95%", "CVaR Histórico 95%", "VaR Histórico 99%", "CVaR Histórico 99%"],
@@ -419,6 +419,9 @@ if stock_seleccionado:
                                         porcentaje_var_hist_99, porcentaje_cvar_hist_99]
     })
 
-    # Mostrar la tabla en Streamlit
+    # Resetear el índice y eliminarlo
+    resultados = resultados.reset_index(drop=True)
+
+    # Mostrar la tabla sin los índices
     st.subheader("Resultados de Violaciones y Porcentaje de Violaciones para VaR y CVaR")
     st.dataframe(resultados)
