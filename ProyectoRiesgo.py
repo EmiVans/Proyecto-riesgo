@@ -426,6 +426,7 @@ if stock_seleccionado:
     st.subheader("Resultados de Violaciones y Porcentaje de Violaciones para VaR y CVaR")
     st.dataframe(resultados)
 
-st.write("De acuerdo con los resultados obtenidos en la gráfica y la tabla, en general, nuestras estimaciones son precisas. Sin embargo, se observa que las métricas de VaR histórico y paramétrico al 99% de confianza presentan un mayor margen de error. Esto podría explicarse por el hecho de que se está utilizando un modelo basado en una distribución normal, cuando en realidad los rendimientos podrían seguir una distribución con colas más pesadas, lo cual es típico en los mercados financieros.")
+    st.write("De acuerdo con los resultados obtenidos en la gráfica y la tabla, en general, nuestras estimaciones son precisas. Sin embargo, se observa que las métricas de VaR histórico y paramétrico al 99% de confianza presentan un mayor margen de error. Esto podría explicarse por el hecho de que se está utilizando un modelo basado en una distribución normal, cuando en realidad los rendimientos podrían seguir una distribución con colas más pesadas, lo cual es típico en los mercados financieros.")
 
-st.write("Por otro lado, es evidente que las métricas con menos errores son las de CVaR. Esto no es sorprendente, ya que estas métricas están diseñadas para capturar los valores más extremos en la cola de la distribución, lo que las hace más precisas para detectar los eventos de riesgo más severos.")
+    st.write("Por otro lado, es evidente que las métricas con menos errores son las de CVaR. Esto no es sorprendente, ya que estas métricas están diseñadas para capturar los valores más extremos en la cola de la distribución, lo que las hace más precisas para detectar los eventos de riesgo más severos.")
+    st.write("Este es un cambio")
