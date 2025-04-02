@@ -350,7 +350,8 @@ if stock_seleccionado:
     NVDA_cvar_hist_95_1 = NVDA_cvar_hist_95.shift(1)
     NVDA_cvar_hist_99_1 = NVDA_cvar_hist_99.shift(1)
 
-    st.title("Análisis de VaR y CVaR: Métodos Histórico y Paramétrico a 95% y 99% de Confianza")
+    st.subheader("Análisis de VaR y CVaR a 95% y 99% de Confianza")
+
 
     # Crear la figura
     fig, ax = plt.subplots(figsize=(12, 6))
