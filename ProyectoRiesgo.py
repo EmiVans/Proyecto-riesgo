@@ -377,3 +377,48 @@ if stock_seleccionado:
 
     # Mostrar gráfico en Streamlit
     st.pyplot(fig)
+
+
+##################################################################################################################################
+###################################################### Eficinecia  ###############################################################
+    
+    # Funcion para calcular la eficiencia
+    def eficiencia_estimacion(df_rendimientos, risk_est, window=252):
+        violaciones_risk = 0
+        total_datos = len(df_rendimientos) - window
+
+        for i in range(window, len(df_rendimientos) - 1):  # Ajuste para evitar el índice fuera de rango
+            if df_rendimientos[stock_seleccionado].iloc[i + 1] < risk_est.iloc[i,0]:  # Comparar rendimiento del día siguiente
+                violaciones_risk += 1
+
+        porcentaje_violaciones_risk = (violaciones_risk / total_datos) * 100
+
+        return violaciones_risk, porcentaje_violaciones_risk
+    # Calcular violaciones y porcentajes para los VaR y CVaR
+    violaciones_var_param_95, porcentaje_var_param_95 = eficiencia_estimacion(df_rendimientos, NVDA_var_param_95)
+    violaciones_cvar_param_95, porcentaje_cvar_param_95 = eficiencia_estimacion(df_rendimientos, NVDA_cvar_param_95)
+
+    violaciones_var_param_99, porcentaje_var_param_99 = eficiencia_estimacion(df_rendimientos, NVDA_var_param_99)
+    violaciones_cvar_param_99, porcentaje_cvar_param_99 = eficiencia_estimacion(df_rendimientos, NVDA_cvar_param_99)
+
+    violaciones_var_hist_95, porcentaje_var_hist_95 = eficiencia_estimacion(df_rendimientos, NVDA_var_hist_95)
+    violaciones_cvar_hist_95, porcentaje_cvar_hist_95 = eficiencia_estimacion(df_rendimientos, NVDA_cvar_hist_95)
+
+    violaciones_var_hist_99, porcentaje_var_hist_99 = eficiencia_estimacion(df_rendimientos, NVDA_var_hist_99)
+    violaciones_cvar_hist_99, porcentaje_cvar_hist_99 = eficiencia_estimacion(df_rendimientos, NVDA_cvar_hist_99)
+
+    # Crear un DataFrame con los resultados
+    resultados = pd.DataFrame({
+        "Método": ["VaR Paramétrico 95%", "CVaR Paramétrico 95%", "VaR Paramétrico 99%", "CVaR Paramétrico 99%",
+                "VaR Histórico 95%", "CVaR Histórico 95%", "VaR Histórico 99%", "CVaR Histórico 99%"],
+        "Violaciones": [violaciones_var_param_95, violaciones_cvar_param_95, violaciones_var_param_99, 
+                        violaciones_cvar_param_99, violaciones_var_hist_95, violaciones_cvar_hist_95,
+                        violaciones_var_hist_99, violaciones_cvar_hist_99],
+        "Porcentaje de Violaciones (%)": [porcentaje_var_param_95, porcentaje_cvar_param_95, porcentaje_var_param_99, 
+                                        porcentaje_cvar_param_99, porcentaje_var_hist_95, porcentaje_cvar_hist_95,
+                                        porcentaje_var_hist_99, porcentaje_cvar_hist_99]
+    })
+
+    # Mostrar la tabla en Streamlit
+    st.subheader("Resultados de Violaciones y Porcentaje de Violaciones para VaR y CVaR")
+    st.dataframe(resultados)
