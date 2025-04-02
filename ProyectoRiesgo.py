@@ -350,7 +350,7 @@ if stock_seleccionado:
     NVDA_cvar_hist_95_1 = NVDA_cvar_hist_95.shift(1)
     NVDA_cvar_hist_99_1 = NVDA_cvar_hist_99.shift(1)
 
-    st.subheader("Análisis de VaR y CVaR a 95% y 99% de Confianza")
+    st.subheader("Análisis de VaR y CVaR mediante ventanas moviles a 95% y 99% de Confianza")
 
 
     # Crear la figura
@@ -425,3 +425,7 @@ if stock_seleccionado:
     # Mostrar la tabla sin los índices
     st.subheader("Resultados de Violaciones y Porcentaje de Violaciones para VaR y CVaR")
     st.dataframe(resultados)
+
+st.write("De acuerdo con los resultados obtenidos en la gráfica y la tabla, en general, nuestras estimaciones son precisas. Sin embargo, se observa que las métricas de VaR histórico y paramétrico al 99% de confianza presentan un mayor margen de error. Esto podría explicarse por el hecho de que se está utilizando un modelo basado en una distribución normal, cuando en realidad los rendimientos podrían seguir una distribución con colas más pesadas, lo cual es típico en los mercados financieros.")
+
+st.write("Por otro lado, es evidente que las métricas con menos errores son las de CVaR. Esto no es sorprendente, ya que estas métricas están diseñadas para capturar los valores más extremos en la cola de la distribución, lo que las hace más precisas para detectar los eventos de riesgo más severos.")
