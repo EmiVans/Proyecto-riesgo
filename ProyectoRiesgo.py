@@ -256,4 +256,123 @@ if stock_seleccionado:
     # Mostrar la figura en Streamlit
     st.pyplot(fig)
 
+
+    ##################################################################################################################################
+    ################################################# VaR y CVar Rolling Windows #####################################################
+
+
+    # Función para calcular VaR paramétrico con ventanas móviles
+    def rolling_var_param(returns, alpha=0.95, window=252):
+
+        z_alpha = norm.ppf(1-alpha)  # Cuantil de la normal estándar (negativo)
+
+        # Media y desviación estándar móviles
+        rolling_mean = returns.rolling(window=window).mean()
+        rolling_std = returns.rolling(window=window).std()
+
+        # VaR paramétrico
+        var = rolling_mean + z_alpha * rolling_std  # Esto es negativo (pérdida esperada)
+
+        return var
+
+    # Función para calcular CVaR paramétrico con ventanas móviles
+    def rolling_cvar_param(returns, alpha=0.95, window=252):
+
+        # Obtener z_alpha (cuantil de la normal)
+        z_alpha = norm.ppf(1-alpha)
+
+        # Media y desviación estándar móviles
+        rolling_mean = returns.rolling(window=window).mean()
+        rolling_std = returns.rolling(window=window).std()
+
+        # VaR paramétrico
+        var = rolling_var_param(returns, alpha, window)
+
+        # CVaR (Expected Shortfall)
+        cvar = rolling_mean - (norm.pdf(z_alpha) / (1-alpha)) * rolling_std
+
+        return cvar
+
+    # Función para calcular el VaR histórico con ventanas móviles
+    def rolling_var_hist(returns, alpha=0.95, window=252):
+        hVaR_list = [np.nan] * (window-1)
+
+        for i in range(window, len(returns)+1):
+            df_rendimientos = returns[stock_seleccionado].iloc[i-window:i]  # Ventana deslizante
+
+            hVaR = df_rendimientos.quantile(1 - alpha)
+
+            hVaR_list.append(hVaR)
+
+        return pd.DataFrame(hVaR_list, index=returns.index)
+
+
+    # Función para calcular el CVaR histórico con ventanas móviles
+    def rolling_cvar_hist(returns, alpha=0.95, window=252):
+        hCVaR_list = [np.nan] * (window-1)
+
+        for i in range(window, len(returns)+1):
+            df_rendimientos = returns[stock_seleccionado].iloc[i-window:i]  # Ventana deslizante
+
+            var = df_rendimientos.quantile(1 - alpha)  # VaR histórico
+
+            valores_extremos = df_rendimientos[df_rendimientos <= var]
+
+            hCVaR = valores_extremos.mean() if not valores_extremos.empty else np.nan
+
+            hCVaR_list.append(hCVaR)
+
+        return pd.DataFrame(hCVaR_list, index=returns.index)
     
+    # Var y CVar al 95
+    NVDA_var_param_95 = rolling_var_param(df_rendimientos)
+    NVDA_cvar_param_95 = rolling_cvar_param(df_rendimientos)
+
+    # Var y CVar al 99
+    NVDA_var_param_99 = rolling_var_param(df_rendimientos, alpha=0.99)
+    NVDA_cvar_param_99 = rolling_cvar_param(df_rendimientos, alpha=0.99)
+
+    # Var y CVar historico al 95
+    NVDA_var_hist_95 = rolling_var_hist(df_rendimientos)
+    NVDA_cvar_hist_95 = rolling_cvar_hist(df_rendimientos)
+
+    # Var y CVar historico al 99
+    NVDA_var_hist_99 = rolling_var_hist(df_rendimientos, alpha=0.99)
+    NVDA_cvar_hist_99 = rolling_cvar_hist(df_rendimientos, alpha=0.99)
+
+    # Asegúrate de haber hecho el desplazamiento de un día
+    NVDA_var_param_95_1 = NVDA_var_param_95.shift(1)
+    NVDA_var_param_99_1 = NVDA_var_param_99.shift(1)
+    NVDA_var_hist_95_1 = NVDA_var_hist_95.shift(1)
+    NVDA_var_hist_99_1 = NVDA_var_hist_99.shift(1)
+    NVDA_cvar_param_95_1 = NVDA_cvar_param_95.shift(1)
+    NVDA_cvar_param_99_1 = NVDA_cvar_param_99.shift(1)
+    NVDA_cvar_hist_95_1 = NVDA_cvar_hist_95.shift(1)
+    NVDA_cvar_hist_99_1 = NVDA_cvar_hist_99.shift(1)
+
+
+
+    # Crear la figura
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Graficar los rendimientos
+    ax.plot(df_rendimientos[stock_seleccionado], label="Rendimientos", color="blue", alpha=0.6)
+    ax.plot(NVDA_var_param_95_1, label="VaR paramétrico 95%", color="red", linestyle="dashed")
+    ax.plot(NVDA_var_param_99_1, label="VaR paramétrico 99%", color="yellow", linestyle="dashed")
+    ax.plot(NVDA_var_hist_95_1, label="VaR histórico 95%", color="green", linestyle="dashed")
+    ax.plot(NVDA_var_hist_99_1, label="VaR histórico 99%", color="orange", linestyle="dashed")
+    ax.plot(NVDA_cvar_param_95_1, label="CVaR paramétrico 95%", color="cyan", linestyle="dotted")
+    ax.plot(NVDA_cvar_param_99_1, label="CVaR paramétrico 99%", color="purple", linestyle="dotted")
+    ax.plot(NVDA_cvar_hist_95_1, label="CVaR histórico 95%", color="pink", linestyle="dotted")
+    ax.plot(NVDA_cvar_hist_99_1, label="CVaR histórico 99%", color="lightblue", linestyle="dotted")
+
+    # Mejorar la visualización
+    ax.axhline(0, color="black", linewidth=0.8, linestyle="--")  # Línea en cero
+    ax.legend()
+    ax.set_title("Rendimientos vs. VaR y CVaR Paramétrico y Histórico (95% y 99%)")
+    ax.set_xlabel("Fecha")
+    ax.set_ylabel("Rendimiento")
+    ax.grid(True, linestyle="--", alpha=0.5)
+
+    # Mostrar gráfico en Streamlit
+    st.pyplot(fig)
