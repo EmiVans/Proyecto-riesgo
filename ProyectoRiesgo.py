@@ -21,7 +21,7 @@ def calcular_rendimientos(df):
     return df.pct_change().dropna()
 
 # Lista de acciones de ejemplo
-stocks_lista = ['NVDA']
+stocks_lista = ['NVDA',"^MXX"]
 
 with st.spinner("Descargando datos..."):
     df_precios = obtener_datos(stocks_lista)
