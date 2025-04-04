@@ -454,7 +454,7 @@ if stock_seleccionado:
     vaR_99_volatil_df.set_index('Date', inplace=True)
     
     
-    st.subheader("Análisis de Var calculado con método alternativo mediante ventanas moviles a 95% y 99% de Confianza")
+    st.subheader("Ventanas moviles de volatilidad al 95% y 99% de confianza")
 
 
 
